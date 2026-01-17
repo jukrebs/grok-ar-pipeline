@@ -13,7 +13,8 @@ python3 run.py \
     /data/jobs/${JOB_ID}/image.jpg \
     --output-dir /data/jobs/${JOB_ID} \
     --model-save-format glb \
-    --device cuda:0
+    --device cuda:0 \
+    --bake-texture
 
 GLB_FILE=$(find /data/jobs/${JOB_ID}/ -name "*.glb" 2>/dev/null | head -n 1)
 if [ -n "$GLB_FILE" ]; then
