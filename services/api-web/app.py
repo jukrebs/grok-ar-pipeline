@@ -85,7 +85,7 @@ async def get_examples():
         {
             'job_id': 'ex_xai-robot',
             'name': 'xAI Humanoid Robot',
-            'description': 'Full-body futuristic humanoid robot with white/silver armor over dark graphite frame, cyan/teal LED accents, servo joints, and small xAI mark on chest. Museum quality with transparent background.',
+            'description': 'Hajime Sorayama-inspired full-body humanoid robot with sleek sci-fi elegance, smooth contours, chrome aesthetic. White/silver armor over dark graphite frame with cyan/teal LED accents, clean panels, visible fasteners, and exposed servo joints. Articulated segmented fingers, narrow helmet head with minimal visor. Materials: brushed aluminum + polished chrome + matte ceramic + rubberized joints with showroom finish. Transparent background, no shadows.',
             'image_url': '/api/asset/ex_xai-robot?asset_type=image',
         },
     ]
