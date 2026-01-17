@@ -78,8 +78,8 @@ async def get_examples():
         },
         {
             'job_id': 'ex_mars-habitat',
-            'name': 'Mars Globe',
-            'description': 'Photorealistic Mars planet as a printable desk globe, 15cm diameter sphere with Valles Marineris canyon, polar ice caps, and craters',
+            'name': 'Mars Planet',
+            'description': 'Highly detailed realistic 3D rendering of Mars as a planet. Isolated on featureless background with clear surface details: craters, canyons, dark basaltic plains, and polar ice caps. Rich vibrant shades of red, orange, and brown with realistic textures and geological features. No stars, no space, clean sharp edges.',
             'image_url': '/api/asset/ex_mars-habitat?asset_type=image',
         },
         {
