@@ -84,8 +84,8 @@ async def get_examples():
         },
         {
             'job_id': 'ex_xai-robot',
-            'name': 'xAI Robot',
-            'description': 'Friendly xAI robot mascot with sleek modern design',
+            'name': 'xAI Lobby Robot',
+            'description': 'Photorealistic xAI lobby robot statue as desk model, sleek humanoid on black pedestal with glowing blue LED accents',
             'image_url': '/api/asset/ex_xai-robot?asset_type=image',
         },
     ]
