@@ -13,11 +13,9 @@ python3 run.py \
     /data/jobs/${JOB_ID}/image.jpg \
     --output-dir /data/jobs/${JOB_ID} \
     --model-save-format glb \
-    --bake-texture \
-    --texture-resolution 2048 \
     --device cuda:0
 
-GLB_FILE=$(ls /data/jobs/${JOB_ID}/*.glb 2>/dev/null | head -n 1)
+GLB_FILE=$(find /data/jobs/${JOB_ID}/ -name "*.glb" 2>/dev/null | head -n 1)
 if [ -n "$GLB_FILE" ]; then
     mv "$GLB_FILE" /data/jobs/${JOB_ID}/model.glb
     echo '{status: complete, glb_path: /data/jobs/\${JOB_ID}/model.glb, job_id: \${JOB_ID}}'

@@ -26,7 +26,7 @@ def main():
 
     try:
         response = client.images.generate(
-            model='grok-2-image',
+            model='grok-2-image-1212',
             prompt=prompt,
             n=1,
             response_format='b64_json'

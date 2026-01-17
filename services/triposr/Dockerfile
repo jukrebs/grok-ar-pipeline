@@ -19,7 +19,7 @@ RUN git clone --depth 1 https://github.com/VAST-AI-Research/TripoSR.git /app/tri
 
 WORKDIR /app/triposr
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir onnxruntime-gpu onnx -r requirements.txt
 
 COPY run.sh /app/
 RUN chmod +x /app/run.sh

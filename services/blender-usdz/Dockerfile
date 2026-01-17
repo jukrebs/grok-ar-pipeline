@@ -14,8 +14,9 @@ RUN wget -q https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-
     && mv blender-4.2.0-linux-x64 /usr/local/blender \
     && rm blender-4.2.0-linux-x64.tar.xz
 
+COPY export_usdz.py /app/
 COPY convert.py /app/
-RUN chmod +x /app/convert.py
+RUN chmod +x /app/export_usdz.py /app/convert.py
 
 WORKDIR /app
 

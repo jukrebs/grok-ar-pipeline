@@ -11,7 +11,7 @@ def convert_glb_to_usdz(input_path: str, output_path: str) -> dict:
         cmd = [
             '/usr/local/blender/blender',
             '-b',  # Background mode
-            '-P', '/app/blender-usdz/export_as_usdz.py',
+            '-P', '/app/export_usdz.py',
             '--',
             input_path,
             output_path

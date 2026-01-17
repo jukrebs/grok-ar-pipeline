@@ -17,7 +17,7 @@ def generate_image(prompt: str, output_dir: str = 'jobs') -> str:
     }
     
     payload = {
-        'model': 'grok-2-image',
+        'model': 'grok-2-image-1212',
         'prompt': prompt,
         'n': 1,
         'response_format': 'b64_json'
