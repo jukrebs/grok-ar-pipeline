@@ -84,8 +84,8 @@ async def get_examples():
         },
         {
             'job_id': 'ex_xai-robot',
-            'name': 'xAI Lobby Robot',
-            'description': 'Photorealistic xAI lobby robot statue as desk model, sleek humanoid on black pedestal with glowing blue LED accents',
+            'name': 'xAI Humanoid Robot',
+            'description': 'Full-body futuristic humanoid robot with white/silver armor over dark graphite frame, cyan/teal LED accents, servo joints, and small xAI mark on chest. Museum quality with transparent background.',
             'image_url': '/api/asset/ex_xai-robot?asset_type=image',
         },
     ]
