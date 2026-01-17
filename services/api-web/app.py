@@ -93,7 +93,7 @@ async def run_pipeline(job_id: str, prompt: str):
 def update_job(job_id: str, stage: str, progress: int, error: Optional[str] = None):
     if job_id in jobs:
         jobs[job_id].update({
-            'status': 'error' if error else 'processing',
+            'status': 'error' if error else ('complete' if stage == 'complete' else 'processing'),
             'stage': stage,
             'progress': progress,
             'error': error,
