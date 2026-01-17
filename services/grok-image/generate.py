@@ -3,6 +3,29 @@ import json
 import sys
 from pathlib import Path
 
+def enhance_prompt_for_3d(prompt: str) -> str:
+    """
+    Enhance user prompt for better 3D model generation.
+    Adds modifiers that help image-to-3D models like TripoSR.
+    """
+    # 3D-friendly prompt modifiers
+    modifiers = [
+        "Professional product photography",
+        "isolated on neutral background",
+        "full object visible, not cropped",
+        "centered composition",
+        "studio lighting with soft shadows",
+        "multiple angle illumination",
+        "clean and simple background",
+        "no frames or borders",
+        "high detail for 3D reconstruction",
+        "sharp focus on the entire object"
+    ]
+
+    # Build enhanced prompt
+    enhanced = f"{prompt}, {', '.join(modifiers)}"
+    return enhanced
+
 def main():
     if len(sys.argv) > 1:
         prompt = sys.argv[1]
@@ -24,10 +47,13 @@ def main():
 
     client = OpenAI(api_key=api_key, base_url='https://api.x.ai/v1')
 
+    # Enhance prompt for better 3D generation
+    enhanced_prompt = enhance_prompt_for_3d(prompt)
+
     try:
         response = client.images.generate(
             model='grok-2-image-1212',
-            prompt=prompt,
+            prompt=enhanced_prompt,
             n=1,
             response_format='b64_json'
         )
@@ -46,6 +72,7 @@ def main():
             'status': 'complete',
             'image_path': str(image_path),
             'revised_prompt': revised_prompt,
+            'enhanced_prompt': enhanced_prompt,
             'job_id': job_id
         }
         print(json.dumps(status))
