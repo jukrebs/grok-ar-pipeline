@@ -48,6 +48,45 @@ def main():
     # Import GLB file
     bpy.ops.import_scene.gltf(filepath=input_glb)
 
+    # Convert vertex colors to materials for USD export
+    # Blender USD export doesn't support vertex colors, so we need to create materials
+    for obj in bpy.context.scene.objects:
+        if obj.type == 'MESH' and obj.data.vertex_colors:
+            mesh = obj.data
+            
+            # Get the active vertex color layer
+            if mesh.vertex_colors:
+                vcol = mesh.vertex_colors.active
+                
+                # Create a new material
+                mat = bpy.data.materials.new(name=f"{obj.name}_material")
+                mat.use_nodes = True
+                nodes = mat.node_tree.nodes
+                links = mat.node_tree.links
+                
+                # Get or create nodes
+                bsdf = nodes.get("Principled BSDF")
+                if not bsdf:
+                    bsdf = nodes.new(type='ShaderNodeBsdfPrincipled')
+                
+                output = nodes.get("Material Output")
+                if not output:
+                    output = nodes.new(type='ShaderNodeOutputMaterial')
+                
+                # Create attribute node for vertex colors
+                attr_node = nodes.new(type='ShaderNodeAttribute')
+                attr_node.attribute_name = vcol.name
+                
+                # Connect vertex color to principled BSDF base color
+                links.new(attr_node.outputs['Color'], bsdf.inputs['Base Color'])
+                links.new(bsdf.outputs['BSDF'], output.inputs['Surface'])
+                
+                # Assign material to the object
+                if len(obj.material_slots) == 0:
+                    obj.data.materials.append(mat)
+                else:
+                    obj.material_slots[0].material = mat
+
     # Export as USDZ - using default settings
     bpy.ops.wm.usd_export(
         filepath=output_usdz,
