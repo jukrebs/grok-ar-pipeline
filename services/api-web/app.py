@@ -78,8 +78,8 @@ async def get_examples():
         },
         {
             'job_id': 'ex_mars-habitat',
-            'name': 'Mars Habitat',
-            'description': 'Futuristic Mars habitat dome with sci-fi architecture',
+            'name': 'Mars Globe',
+            'description': 'Photorealistic Mars planet as a printable desk globe, 15cm diameter sphere with Valles Marineris canyon, polar ice caps, and craters',
             'image_url': '/api/asset/ex_mars-habitat?asset_type=image',
         },
         {
