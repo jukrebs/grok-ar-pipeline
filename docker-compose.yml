@@ -1,0 +1,51 @@
+services:
+  grok-image:
+    build: ./services/grok-image
+    container_name: grok-image
+    volumes:
+      - ./data:/data
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  triposr:
+    build: ./services/triposr
+    container_name: triposr
+    volumes:
+      - ./data:/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    runtime: nvidia
+    restart: unless-stopped
+
+  blender-usdz:
+    build: ./services/blender-usdz
+    container_name: blender-usdz
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+
+  api-web:
+    build: ./services/api-web
+    container_name: api-web
+    volumes:
+      - ./data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - grok-image
+      - triposr
+      - blender-usdz
+    restart: unless-stopped
+
+volumes:
+  data:
+    driver: local

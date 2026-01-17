@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grok 3D Pipeline</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Generate 3D Model from Prompt</h1>
+        <p class="subtitle">Prompt → Image → 3D → AR Ready</p>
+
+        <form id="generateForm">
+            <div class="input-group">
+                <label for="prompt">Describe what you want to create:</label>
+                <textarea id="prompt" name="prompt" rows="3" placeholder="e.g., A cat in a tree" required></textarea>
+            </div>
+
+            <button type="submit" id="generateBtn">Generate</button>
+        </form>
+
+        <div id="statusSection" style="display: none;">
+            <div class="status-card">
+                <div class="status-header">
+                    <span class="status-icon" id="statusIcon">⏳</span>
+                    <div>
+                        <h3 id="statusTitle">Processing...</h3>
+                        <p id="statusStage">Starting...</p>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                    <span id="progressText">0%</span>
+                </div>
+
+                <div id="errorSection" style="display: none;" class="error-card">
+                    <h4>❌ Error</h4>
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+
+            <div id="resultSection" style="display: none;" class="result-card">
+                <h4>✅ Ready to Download</h4>
+                <div class="download-buttons">
+                    <a id="downloadUsdz" class="btn btn-primary">
+                        📱 Download USDZ (iPhone AR)
+                    </a>
+                    <a id="downloadGlb" class="btn btn-secondary">
+                        📦 Download GLB
+                    </a>
+                    <a id="downloadImage" class="btn btn-tertiary">
+                        🖼️ Download Image
+                    </a>
+                </div>
+                <p class="note">
+                    USDZ files open directly in Safari Quick Look on iPhone
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const prompt = document.getElementById('prompt').value.trim();
+            if (!prompt) return;
+
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Generating...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await response.json();
+                document.getElementById('statusSection').style.display = 'block';
+                pollStatus(data.job_id);
+            } catch (error) {
+                showError('Failed to start generation: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Generate';
+            }
+        });
+
+        function pollStatus(jobId) {
+            const poll = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/api/status/${jobId}`);
+                    const data = await response.json();
+                    updateUI(data);
+
+                    if (data.status === 'complete' || data.status === 'error') {
+                        clearInterval(poll);
+                    }
+                } catch (error) {
+                    clearInterval(poll);
+                    showError('Failed to get status: ' + error.message);
+                }
+            }, 2000);
+        }
+
+        function updateUI(data) {
+            const icon = document.getElementById('statusIcon');
+            const title = document.getElementById('statusTitle');
+            const stage = document.getElementById('statusStage');
+            const progress = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const errorSection = document.getElementById('errorSection');
+            const resultSection = document.getElementById('resultSection');
+
+            errorSection.style.display = data.error ? 'block' : 'none';
+            resultSection.style.display = data.status === 'complete' ? 'block' : 'none';
+
+            if (data.error) {
+                icon.textContent = '❌';
+                title.textContent = 'Error';
+                stage.textContent = 'Failed';
+                progress.style.width = '0%';
+                document.getElementById('errorMessage').textContent = data.error;
+            } else if (data.status === 'complete') {
+                icon.textContent = '✅';
+                title.textContent = 'Complete';
+                stage.textContent = data.stage || 'Ready';
+                progress.style.width = '100%';
+                progressText.textContent = '100%';
+
+                document.getElementById('downloadUsdz').href = `${API_BASE}/api/asset/${data.job_id}?asset_type=usdz`;
+                document.getElementById('downloadGlb').href = `${API_BASE}/api/asset/${data.job_id}?asset_type=glb`;
+                document.getElementById('downloadImage').href = `${API_BASE}/api/asset/${data.job_id}?asset_type=image`;
+            } else {
+                icon.textContent = '⏳';
+                title.textContent = 'Processing';
+                stage.textContent = data.stage || 'Working...';
+                progress.style.width = `${data.progress}%`;
+                progressText.textContent = `${data.progress}%`;
+            }
+        }
+
+        function showError(message) {
+            const errorSection = document.getElementById('errorSection');
+            document.getElementById('errorMessage').textContent = message;
+            errorSection.style.display = 'block';
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('generateBtn').textContent = 'Generate';
+        }
+    </script>
+</body>
+</html>
