@@ -138,7 +138,60 @@ GET /api/asset/6cb6d335?asset_type=image
 
 ---
 
+### 4. Get Examples
+
+Get a list of pre-rendered example models that can be displayed instantly without waiting for generation.
+
+**Endpoint:** `GET /api/examples`
+
+**Response:**
+```json
+{
+  "examples": [
+    {
+      "job_id": "ex_elon-figurine",
+      "name": "Elon Figurine",
+      "description": "Collectible Elon Musk figurine with premium quality design",
+      "image_url": "/api/asset/ex_elon-figurine?asset_type=image"
+    },
+    {
+      "job_id": "ex_mars-habitat",
+      "name": "Mars Habitat",
+      "description": "Futuristic Mars habitat dome with sci-fi architecture",
+      "image_url": "/api/asset/ex_mars-habitat?asset_type=image"
+    },
+    {
+      "job_id": "ex_xai-robot",
+      "name": "xAI Robot",
+      "description": "Friendly xAI robot mascot with sleek modern design",
+      "image_url": "/api/asset/ex_xai-robot?asset_type=image"
+    }
+  ]
+}
+```
+
+**Status Codes:**
+- `200` - Examples retrieved successfully
+- `500` - Server error
+
+**Usage:**
+Examples can be used to:
+1. Display clickable cards on the frontend for instant demo
+2. Allow users to explore pre-generated 3D models without waiting
+3. Serve as templates for generating similar models
+
+After selecting an example, you can immediately fetch its assets:
+- `GET /api/asset/{example_job_id}?asset_type=usdz` - Download USDZ for AR
+- `GET /api/asset/{example_job_id}?asset_type=glb` - Download GLB for 3D viewers
+- `GET /api/asset/{example_job_id}?asset_type=image` - Download preview image
+
+**Note:** Example jobs have `status: "complete"` and `progress: 100` when queried via `/api/status/{example_id}`.
+
+---
+
 ## Pipeline Flow
+
+### Option A: Generate New Model
 
 1. **Generate Request** → POST `/api/generate` with prompt
 2. **Get Job ID** → Use returned `job_id` to track progress
@@ -146,7 +199,20 @@ GET /api/asset/6cb6d335?asset_type=image
 4. **Check Completion** → When `status === "complete"`, assets are ready
 5. **Download Assets** → GET `/api/asset/{job_id}?asset_type={type}`
 
-## Polling Example
+### Option B: Use Pre-rendered Example
+
+1. **Get Examples** → GET `/api/examples` to see available examples
+2. **Select Example** → User clicks on an example card
+3. **Download Asset** → GET `/api/asset/{example_job_id}?asset_type=usdz` (instant, no waiting)
+
+Examples are useful for:
+- Quick demos without API calls
+- Showcasing capabilities with high-quality results
+- Letting users explore before generating their own
+
+## Usage Examples
+
+### Generate New Model (With Polling)
 
 ```javascript
 async function generateAndDownload(prompt) {
@@ -175,6 +241,33 @@ async function generateAndDownload(prompt) {
       console.error('Generation failed:', status.error);
     }
   }, 2000);
+}
+```
+
+### Display Pre-rendered Examples
+
+```javascript
+async function loadExamples() {
+  const response = await fetch('http://your-server:8000/api/examples');
+  const { examples } = await response.json();
+
+  examples.forEach(example => {
+    // Create clickable card for each example
+    const card = document.createElement('div');
+    card.className = 'example-card';
+    card.innerHTML = `
+      <img src="${example.image_url}" alt="${example.name}">
+      <h3>${example.name}</h3>
+      <p>${example.description}</p>
+    `;
+
+    // On click, download USDZ instantly (no waiting)
+    card.onclick = () => {
+      window.location.href = `http://your-server:8000/api/asset/${example.job_id}?asset_type=usdz`;
+    };
+
+    document.getElementById('examples-container').appendChild(card);
+  });
 }
 ```
 
