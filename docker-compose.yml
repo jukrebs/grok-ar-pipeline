@@ -9,7 +9,9 @@ services:
     restart: unless-stopped
 
   triposr:
-    build: ./services/triposr
+    build:
+      context: .
+      dockerfile: ./services/triposr/Dockerfile
     container_name: triposr
     volumes:
       - ./data:/data
