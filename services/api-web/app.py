@@ -16,7 +16,24 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 DATA_DIR = Path('/data/jobs')
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-jobs = {}
+# Pre-populate examples as complete jobs
+examples = [
+    'ex_elon-figurine',
+    'ex_mars-habitat',
+    'ex_xai-robot',
+]
+
+jobs = {
+    ex_id: {
+        'job_id': ex_id,
+        'status': 'complete',
+        'stage': 'complete',
+        'progress': 100,
+        'created_at': None,
+        'prompt': 'Pre-rendered example',
+    }
+    for ex_id in examples
+}
 
 class GenerateRequest(BaseModel):
     prompt: str
