@@ -107,7 +107,7 @@ async def run_container(container_name: str, job_id: str, prompt: Optional[str] 
     elif container_name == 'triposr':
         cmd.extend(['/app/run.sh', job_id])
     elif container_name == 'blender-usdz':
-        cmd.extend(['python3', '/app/convert.py', job_id])
+        cmd.extend(['/usr/local/blender/blender', '-b', '-P', '/app/export_usdz.py', '--', '/data/jobs/{}/model.glb'.format(job_id), '/data/jobs/{}/model.usdz'.format(job_id), job_id])
 
     process = await asyncio.create_subprocess_exec(
         *cmd,

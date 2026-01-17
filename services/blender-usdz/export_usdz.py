@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Single-file GLB to USDZ converter for Blender
+Simple GLB to USDZ converter for Blender - exports GLB directly as USDZ
 """
 import bpy
 import sys
@@ -17,8 +17,9 @@ def main():
 
         input_glb = argv[0]
         output_usdz = argv[1]
+        job_id = argv[2] if len(argv) > 2 else 'test'
     else:
-        print("Error: No input/output specified")
+        print("Usage: blender --background --python export_usdz.py -- <input_glb> <output_usdz> <job_id>")
         sys.exit(1)
 
     # Validate input file exists
@@ -47,7 +48,7 @@ def main():
     # Import GLB file
     bpy.ops.import_scene.gltf(filepath=input_glb)
 
-    # Export as USDZ
+    # Export as USDZ - using default settings
     bpy.ops.wm.usd_export(
         filepath=output_usdz,
         export_materials=True,
