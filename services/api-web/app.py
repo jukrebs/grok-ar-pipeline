@@ -49,6 +49,31 @@ async def get_status(job_id: str):
         raise HTTPException(status_code=404, detail='Job not found')
     return jobs[job_id]
 
+@app.get('/api/examples')
+async def get_examples():
+    """Return list of pre-rendered example jobs"""
+    examples = [
+        {
+            'job_id': 'ex_elon-figurine',
+            'name': 'Elon Figurine',
+            'description': 'Collectible Elon Musk figurine with premium quality design',
+            'image_url': '/api/asset/ex_elon-figurine?asset_type=image',
+        },
+        {
+            'job_id': 'ex_mars-habitat',
+            'name': 'Mars Habitat',
+            'description': 'Futuristic Mars habitat dome with sci-fi architecture',
+            'image_url': '/api/asset/ex_mars-habitat?asset_type=image',
+        },
+        {
+            'job_id': 'ex_xai-robot',
+            'name': 'xAI Robot',
+            'description': 'Friendly xAI robot mascot with sleek modern design',
+            'image_url': '/api/asset/ex_xai-robot?asset_type=image',
+        },
+    ]
+    return {'examples': examples}
+
 @app.get('/api/asset/{job_id}')
 async def get_asset(job_id: str, asset_type: str = 'usdz'):
     job_dir = DATA_DIR / job_id

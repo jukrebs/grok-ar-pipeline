@@ -3,5 +3,6 @@
 .env.local
 .env.*.local
 
-# Pipeline output
-data/jobs/
+# Pipeline output (except examples)
+data/jobs/*
+!data/jobs/ex_*/
